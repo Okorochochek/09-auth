@@ -3,7 +3,7 @@ import { cookies } from "next/headers";
 import { parse } from "cookie";
 import { checkServerSession } from "./lib/api/serverApi";
 
-const privateRoutes = ["/profile/:path*", "/notes/:patch*"];
+const privateRoutes = ["/profile", "/notes"];
 const publicRoutes = ["/sign-up", "/sign-in"];
 
 export async function proxy(request: NextRequest) {
@@ -18,6 +18,11 @@ export async function proxy(request: NextRequest) {
   const isPublicRoute = publicRoutes.some((route) =>
     pathname.startsWith(route)
   );
+
+  if (accessToken) {
+    if (isPublicRoute) return NextResponse.redirect(new URL("/", request.url));
+    return NextResponse.next();
+  }
 
   if (!accessToken) {
     if (refreshToken) {
@@ -74,5 +79,5 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/profile/:path*","/notes/:patch*", "/sign-up", "/sign-in"],
+  matcher: ["/profile/:path*", "/notes/:path*", "/sign-up", "/sign-in"],
 };
