@@ -24,7 +24,7 @@ export default function SignUp() {
           setError('Invalid Email or Password');
         }
       }catch(error){
-        setError((error as Error).message ?? 'Oops... some error');
+        setError((error as Error).message ?? 'Oops... some error. This email is already in use.');
       }
 };
 
@@ -48,7 +48,7 @@ export default function SignUp() {
       </button>
     </div>
 
-   {error && <p className={css.error}>Error</p>}
+   {error && <p className={css.error}>{error}</p>}
   </form>
 </main>
 
